@@ -14,9 +14,11 @@ export class AppComponent {
   output: string;
 
   constructor(private fb: FormBuilder) {
+    const defaultEncode = 'V, H, 2, H, V, -2';
+    const defaultText = 'Lorem ipsum dolor sit amet';
     this.form = this.fb.group({
-      'encode': new FormControl(null, Validators.required),
-      'text': new FormControl(null, Validators.required)
+      'encode': new FormControl(defaultEncode, Validators.required),
+      'text': new FormControl(defaultText, Validators.required)
     })
   }
 
