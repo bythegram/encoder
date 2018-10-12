@@ -78,6 +78,7 @@ export class AppComponent {
         }
       }
     })
+    // Final encoded string
     this.encodedString = DEFAULT.join('');
   }
 
@@ -89,8 +90,10 @@ export class AppComponent {
     const mappedArray = text.split('').map(t => {
       const place = DEFAULTMAPPED.indexOf(t.toLowerCase())
       if (place < 0) {
+        // Invalid character
         return t;
       }
+      // Encoded character
       return this.encodedString[place];
     })
     this.output = mappedArray.join('');
