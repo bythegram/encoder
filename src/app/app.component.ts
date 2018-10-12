@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 let DEFAULT = ['1234567890','qwertyuiop','asdfghjkl','zxcvbnm'];
-const DEFAULTMAPPED = DEFAULT.join('');
 
 @Component({
   selector: 'app-root',
@@ -13,7 +12,6 @@ export class AppComponent {
   title = 'Limelight Encoder';
   form: FormGroup;
   output: string;
-  encodedString: string;
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -26,16 +24,20 @@ export class AppComponent {
    * On Form Submit
    */
   handleFormSubmit() {
-    this.handleEncoding();
-    this.mapText();
+    const encode = this.form.get('encode').value;
+    const text = this.form.get('text').value;
+
+    const encodedString = this.handleEncoding(encode);
+    const defaultList = DEFAULT.join('')
+    this.output = this.mapText(encodedString, text, defaultList);
   }
 
   /**
    * Handle encode arguments
    */
-  handleEncoding() {
-    const encode = this.form.get('encode').value;
+  handleEncoding(encode) {
     const encodedArray = encode.split(',');
+    let list = DEFAULT;
     encodedArray.map(en => {
       const trimmed = en.trim().toUpperCase();
       /**
@@ -45,13 +47,13 @@ export class AppComponent {
         switch (( Number(trimmed) >= 0 )? 1 : -1) {
           case 1: {
             console.log('Positive Shift');
-            this.shiftRight(Number(trimmed))
+            list = this.shiftRight(Number(trimmed), list)
 
             break
           }
           case -1: {
             console.log('Negative Shift');
-            this.shiftLeft(Number(trimmed))
+            list = this.shiftLeft(Number(trimmed), list)
 
             break
           }
@@ -65,12 +67,12 @@ export class AppComponent {
       switch (trimmed) {
         case ('H'): {
           console.log('Horizontal Flip');
-          this.horizontalFlip()
+          list = this.horizontalFlip(list)
           break
         }
         case ('V'): {
           console.log('Vertical Flip');
-          this.verticalFilp()
+          list = this.verticalFilp(list)
           break
         }
         default: {
@@ -79,33 +81,33 @@ export class AppComponent {
       }
     })
     // Final encoded string
-    this.encodedString = DEFAULT.join('');
+    return list.join('');
   }
 
   /**
    * Map Text To Encodeing
    */
-  mapText() {
-    const text = this.form.get('text').value;
+  mapText(encodedString, text, defaultList) {
     const mappedArray = text.split('').map(t => {
-      const place = DEFAULTMAPPED.indexOf(t.toLowerCase())
+      const place = defaultList.indexOf(t.toLowerCase())
       if (place < 0) {
         // Invalid character
         return t;
       }
       // Encoded character
-      return this.encodedString[place];
+      return encodedString[place];
     })
-    this.output = mappedArray.join('');
+    return mappedArray.join('');
   }
 
   /**
-   * Shift Left
+   * Shift Left - TODO: still needs fixing
    */
-  shiftLeft(places) {
-    DEFAULT = DEFAULT.map(d => {
+  shiftLeft(places, list) {
+    const shift = places *= -1;
+    return list.map(d => {
       const asArray = d.split('');
-      asArray.unshift.apply(asArray, asArray.splice(3, places));
+      asArray.unshift.apply(asArray, asArray.splice(0, shift));
 
       return asArray.join('')
     })
@@ -114,8 +116,8 @@ export class AppComponent {
   /**
    * Shift Right
    */
-  shiftRight(places) {
-    DEFAULT = DEFAULT.map(d => {
+  shiftRight(places, list) {
+    return list.map(d => {
       const asArray = d.split('');
       asArray.push.apply(asArray, asArray.splice(0, places));
 
@@ -126,17 +128,16 @@ export class AppComponent {
   /**
    * Horizontal Flip
    */
-  horizontalFlip() {
-    DEFAULT = DEFAULT.map(d => {
+  horizontalFlip(list) {
+    return list.map(d => {
       return d.split('').reverse().join('')
     });
   }
 
   /**
    * Vertical Flip
-   * TODO - Still Yet to complete
    */
-  verticalFilp() {
-    DEFAULT = DEFAULT;
+  verticalFilp(list) {
+    return list.reverse()
   }
 }
