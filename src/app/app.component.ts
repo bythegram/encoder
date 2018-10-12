@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
-let DEFAULT = ['1234567890','qwertyuiop','asdfghjkl','zxcvbnm'];
+let DEFAULT = ['1234567890', 'qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
 @Component({
   selector: 'app-root',
@@ -28,9 +28,9 @@ export class AppComponent {
   handleFormSubmit() {
     const encode = this.form.get('encode').value;
     const text = this.form.get('text').value;
+    const defaultList = DEFAULT.join('')
 
     const encodedString = this.handleEncoding(encode);
-    const defaultList = DEFAULT.join('')
     this.output = this.mapText(encodedString, text, defaultList);
   }
 
@@ -45,8 +45,8 @@ export class AppComponent {
       /**
        * If it is a number
        */
-      if(Number(trimmed)) {
-        switch (( Number(trimmed) >= 0 )? 1 : -1) {
+      if (Number(trimmed)) {
+        switch ((Number(trimmed) >= 0) ? 1 : -1) {
           case 1: {
             console.log('Positive Shift');
             list = this.shiftRight(Number(trimmed), list)
