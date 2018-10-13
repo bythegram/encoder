@@ -19,9 +19,9 @@
         <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Submit</button>
       </form>
     </div>
-    <div class="col-12" *ngIf="output">
+    <div class="col-12" *ngIf="output$ | async">
       <em>
-        {{ output }}
+        {{ output$ | async }}
       </em>
     </div>
   </div>
