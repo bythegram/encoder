@@ -86,10 +86,9 @@ export class AppService {
    * Shift Left - TODO: still needs fixing
    */
   shiftLeft(places, list) {
-    const shift = places *= -1;
     return list.map(d => {
       const asArray = d.split('');
-      asArray.unshift.apply(asArray, asArray.splice(0, shift));
+      asArray.unshift.apply(asArray, asArray.splice(asArray.length, places));
 
       return asArray.join('')
     })
